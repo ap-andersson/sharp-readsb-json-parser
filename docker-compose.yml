@@ -1,0 +1,10 @@
+services:
+  sharp-readsb-json-parser:
+    container_name: sharp-parser
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    environment:
+      - FEEDER_JSON_PARSER_URL=ultrafeeder
+      - FEEDER_JSON_PARSER_PORT=30047
+      - FEEDER_JSON_PARSER_TRACE=false
