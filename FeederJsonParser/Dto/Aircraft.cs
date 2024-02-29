@@ -11,7 +11,7 @@ public class Aircraft
     public string Hex { get; set; }
 
     [JsonPropertyName("flight")]
-    public string Flight { get; set; }
+    public string? Flight { get; set; }
 
     [JsonPropertyName("r")]
     public string AircraftRegistration { get; set; }

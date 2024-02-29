@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using FeederJsonParser.Handler;
+using FeederJsonParser.Database;
 
 namespace FeederJsonParser;
 
@@ -11,7 +12,7 @@ internal class Program
 	{
 		Console.WriteLine("Starting");
 
-		IConfiguration configuration = new ConfigurationBuilder()
+		var configuration = new ConfigurationBuilder()
 			.AddJsonFile("appsettings.json")
 			.AddEnvironmentVariables()
 			.Build();
@@ -32,9 +33,11 @@ internal class Program
 
 		var logger = loggerFactory.CreateLogger<ProgramRunner>();
 
+		await using var db = new AviationContext(appSettings.FEEDER_JSON_PARSER_SQLITE_LOCATION);
+
 		var runner = new ProgramRunner(logger, appSettings, new List<IAircraftHandler>
 			{
-				new DefaultAircraftHandler(logger)
+				new DefaultAircraftHandler(logger, db)
 			});
 
 		await runner.RunForrestRun();
