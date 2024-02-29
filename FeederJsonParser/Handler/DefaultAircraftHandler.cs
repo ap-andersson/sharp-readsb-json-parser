@@ -46,7 +46,7 @@ internal class DefaultAircraftHandler : IAircraftHandler
 			row.EndTime = DateTime.Now;
 			_db.Update(row);
 			await _db.SaveChangesAsync();
-			_logger.LogTrace("Updated existing row. Aircraft: " + aircraft);
+			//_logger.LogTrace("Updated existing row. Aircraft: " + aircraft);
 			return;
 		}
 
@@ -63,7 +63,7 @@ internal class DefaultAircraftHandler : IAircraftHandler
 
 		await _db.AddAsync(newRow);
 		await _db.SaveChangesAsync();
-		_logger.LogTrace("Created new row. Aircraft: " + aircraft);
+		//_logger.LogTrace("Created new row. Aircraft: " + aircraft);
 	}
 
 	private void Sanitize(Aircraft aircraft)
