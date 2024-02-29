@@ -14,6 +14,7 @@ You can run the program with a appsettings.json to set the variables or as a Doc
 | FEEDER_JSON_PARSER_URL | No | ultrafeeder | URL used to connect to readsb JSON output
 | FEEDER_JSON_PARSER_PORT | No | 30047 | Port used to connect to readsb JSON  output 
 | FEEDER_JSON_PARSER_TRACE | No | false | Whether to print trace logs or not. Trace logs include every aircraft info parsed. Will spam.
+| FEEDER_JSON_PARSER_SQLITE_LOCATION | No | /feeder-json-parser/ | Path used for the SQLite file
 
 ## Docker container
 There is a container that is built every time code is pushed and automatically published. The path to the image is ghcr.io/ap-andersson/sharp-readsb-json-parser:main. Below is a docker-compose template:
@@ -27,5 +28,7 @@ services:
       - FEEDER_JSON_PARSER_URL=ultrafeeder
       - FEEDER_JSON_PARSER_PORT=30047
       - FEEDER_JSON_PARSER_TRACE=false
+    volumes:
+      - ./:/feeder-json-parser/
     restart: unless-stopped
 ```
