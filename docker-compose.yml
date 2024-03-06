@@ -6,7 +6,7 @@ services:
       dockerfile: Dockerfile
     #image: ghcr.io/ap-andersson/sharp-readsb-json-parser:main
     environment:
-      - FeederJsonParser__URL=flypi.andylocal.net
+      - FeederJsonParser__URL=ultrafeeder
       - FeederJsonParser__Port=30047
       - Logging__LogLevel__FeederJsonParser=Trace
     volumes:
