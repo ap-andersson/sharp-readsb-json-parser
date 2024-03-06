@@ -1,15 +1,16 @@
 ﻿using FeederJsonParser.Database;
 using FeederJsonParser.Dto;
+using FeederJsonParser.Service;
 using Microsoft.Extensions.Logging;
 
 namespace FeederJsonParser.Handler;
 
 internal class DefaultAircraftHandler : IAircraftHandler
 {
-	private readonly ILogger<ProgramRunner> _logger;
+	private readonly ILogger<ParserService> _logger;
 	private readonly AviationContext _db;
 
-	public DefaultAircraftHandler(ILogger<ProgramRunner> logger, AviationContext db)
+	public DefaultAircraftHandler(ILogger<ParserService> logger, AviationContext db)
 	{
 		_logger = logger;
 		_db = db;

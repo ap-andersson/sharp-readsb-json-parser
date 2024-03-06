@@ -1,16 +1,20 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using FeederJsonParser.Dto;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 
 namespace FeederJsonParser.Database;
 
 public class AviationContext : DbContext
 {
+	private readonly IOptions<AppSettings> _options;
 	public DbSet<AircraftFlightTimespan> FlightInfos { get; set; }
 
 	public string DbPath { get; }
 
-	public AviationContext(string path)
+	public AviationContext(IOptions<AppSettings> options)
 	{
-		DbPath = Path.Combine(path, "aviation.sqlite");
+		_options = options;
+		DbPath = Path.Combine(_options.Value.Sqlite_Location, "aviation.sqlite");
 		Database.EnsureCreated();
 	}
 
