@@ -33,7 +33,7 @@ internal class Program
 			optionsBuilder.EnableSensitiveDataLogging();
 		});
 
-		builder.Services.AddSingleton<IAircraftHandler, DefaultAircraftHandler>();
+		builder.Services.AddScoped<IAircraftHandler, DefaultAircraftHandler>();
 
 		var host = builder.Build();
 

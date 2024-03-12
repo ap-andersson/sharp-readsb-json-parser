@@ -69,7 +69,7 @@ internal class ParserService : IHostedService, IDisposable
 
                 // I do not want to await at this time
                 //_aircraftHandlers.ForEach(handler => handler.HandleAircraft(aircraft));
-                _aircraftHandler.HandleAircraft(aircraft);
+                await _aircraftHandler.HandleAircraft(aircraft);
 
             }
             catch (OperationCanceledException)

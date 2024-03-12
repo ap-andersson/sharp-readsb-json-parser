@@ -24,4 +24,6 @@
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.0" />
   </ItemGroup>
 
+  <Import Project="..\ApiModels\ApiModels.projitems" Label="Shared" />
+
 </Project>

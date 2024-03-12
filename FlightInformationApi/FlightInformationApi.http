@@ -1,0 +1,6 @@
+@FlightInformationApi_HostAddress = http://localhost:5160
+
+POST {{FlightInformationApi_HostAddress}}/Ingest/
+Accept: application/json
+
+###

@@ -1,10 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace FeederJsonParser.Database;
+namespace FlightInformationApi.Database;
 
 [PrimaryKey(nameof(Id))]
-public class AircraftFlightTimespan
+public class FlightDataRecord
 {
 	public long Id { get; set; }
 
@@ -23,9 +23,5 @@ public class AircraftFlightTimespan
 	public DateTime StartTime { get; set; }
 
 	public DateTime EndTime { get; set; }
-
-	public bool Updated { get; set; }
-
-	public DateTime? LastSynced { get; set; }
 
 }

@@ -1,6 +1,7 @@
 ﻿using FeederJsonParser.Database;
 using FeederJsonParser.Dto;
 using FeederJsonParser.Service;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace FeederJsonParser.Handler;
@@ -25,12 +26,12 @@ internal class DefaultAircraftHandler : IAircraftHandler
 		if(string.IsNullOrWhiteSpace(aircraft.Flight)) return;
 
 		// Find any matching existing rows
-		var existingRows = _db.FlightInfos.AsEnumerable()
-			.Where(x => 
-				x.AircraftHex.Equals(aircraft.Hex) 
-				&& x.FlightNumber.Equals(aircraft.Flight)
-				&& (DateTime.Now - x.EndTime).TotalMinutes < 10d)
-			.ToList();
+		var existingRows = await _db.FlightInfos.AsQueryable()
+			.Where(x =>
+				x.AircraftHex == aircraft.Hex
+				&& x.FlightNumber == aircraft.Flight
+				&& x.EndTime > DateTime.Now.AddMinutes(-30))
+			.ToListAsync();
 
 		// More than one row found, should not happen, skip
 		if (existingRows.Count > 1)
@@ -44,10 +45,14 @@ internal class DefaultAircraftHandler : IAircraftHandler
 		{
 			var row = existingRows[0];
 
-			row.EndTime = DateTime.Now;
-			_db.Update(row);
-			await _db.SaveChangesAsync();
-			//_logger.LogTrace("Updated existing row. Aircraft: " + aircraft);
+			await _db.FlightInfos
+				.Where(x => x.Id == row.Id)
+				.ExecuteUpdateAsync(calls => calls.SetProperty(r => r.Updated, true));
+
+			await _db.FlightInfos
+				.Where(x => x.Id == row.Id)
+				.ExecuteUpdateAsync(calls => calls.SetProperty(r => r.EndTime, DateTime.Now));
+
 			return;
 		}
 
@@ -59,7 +64,8 @@ internal class DefaultAircraftHandler : IAircraftHandler
 			AircraftType = aircraft.AircraftType,
 			FlightNumber = aircraft.Flight,
 			StartTime = DateTime.Now,
-			EndTime = DateTime.Now
+			EndTime = DateTime.Now,
+			Updated = true,
 		};
 
 		await _db.AddAsync(newRow);
