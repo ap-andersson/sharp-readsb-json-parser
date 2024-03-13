@@ -1,7 +1,8 @@
-﻿using System.Net.Http.Json;
+﻿using System.Net.Http.Headers;
+using System.Net.Http.Json;
 using FeederJsonParser.Database;
 using FeederJsonParser.Dto;
-using FlightInformationApi;
+using ApiModels;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -37,7 +38,12 @@ internal class SyncDataService : IHostedService, IDisposable
 			return Task.CompletedTask;
 		}
 
-		_timer = new Timer(SyncUpdatedRecords, null, TimeSpan.Zero, TimeSpan.FromSeconds(60));
+		// Run SyncUpdatedRecords every X seconds based on config
+		_timer = new Timer(SyncUpdatedRecords, 
+			null, 
+			TimeSpan.Zero, 
+			TimeSpan.FromSeconds(_settings.Value.SyncIntervalSeconds)
+			);
 
 		return Task.CompletedTask;
 	}
@@ -61,12 +67,16 @@ internal class SyncDataService : IHostedService, IDisposable
 		_logger.LogDebug("SyncDataService is working.");
 		try
 		{
-			await using var db = _factory.CreateScope().ServiceProvider.GetRequiredService<AviationContext>();
+			await using var db = _factory.CreateScope()
+				.ServiceProvider
+				.GetRequiredService<AviationContext>();
 
 			var toBeUpdated = await db.FlightInfos
 				.AsQueryable()
-				.Where(x => x.Updated && (x.LastSynced == null || x.LastSynced < DateTime.Now.AddSeconds(-60)))
-				.ToListAsync();
+				.Where(x => 
+					x.Updated 
+					&& (x.LastSynced == null || x.LastSynced < DateTime.Now.AddSeconds(-60))
+					).ToListAsync();
 
 			var model = MapToModel(toBeUpdated);
 

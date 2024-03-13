@@ -1,4 +1,4 @@
-namespace FlightInformationApi
+namespace ApiModels
 {
 	public class FlightDataModel
 	{

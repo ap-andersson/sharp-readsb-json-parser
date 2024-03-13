@@ -3,6 +3,8 @@ using Microsoft.Extensions.Logging;
 using FeederJsonParser.Handler;
 using FeederJsonParser.Database;
 using FeederJsonParser.Service;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Configuration.Json;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
@@ -15,6 +17,8 @@ internal class Program
 		Console.WriteLine("Starting");
 
 		var builder = Host.CreateApplicationBuilder(args);
+		
+		builder.Configuration.AddJsonFile("appsettings.local.json", true);
 
 		builder.Logging.AddSimpleConsole(options =>
 		{

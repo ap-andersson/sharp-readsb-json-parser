@@ -11,3 +11,14 @@ services:
       - Logging__LogLevel__FeederJsonParser=Trace
     volumes:
       - ./:/feeder-json-parser/
+  
+  flight-info-api:
+    container_name: flight-info-api
+    build:
+      context: ./
+      dockerfile: Dockerfile-Api
+    #image: ghcr.io/ap-andersson/sharp-readsb-json-parser:main
+    environment:
+      - FlightInformationApiSettings__MysqlConnectionString=Server=10.0.0.1;Port=3306;Database=flight_info;Uid=flight_user;Pwd=secret;
+      - Logging__LogLevel__FlightInformationApi=Trace
+

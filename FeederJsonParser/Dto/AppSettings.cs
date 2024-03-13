@@ -9,4 +9,5 @@ public class AppSettings
     public string Sqlite_Location { get; set; } = "/feeder-json-parser/";
 	public Guid? SenderId { get; set; }
 	public string ApiUrl { get; set;}
+	public int SyncIntervalSeconds { get; set; } = 60;
 }

@@ -1,10 +1,14 @@
 using System.Globalization;
+using ApiModels;
 using FlightInformationApi.Database;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
 
 namespace FlightInformationApi.Controllers;
 
+/// <summary>
+/// Controller used to get data into
+/// </summary>
 [ApiController]
 [Route("[controller]")]
 public class IngestController : ControllerBase
@@ -32,20 +36,7 @@ public class IngestController : ControllerBase
 				);
 	}
 
-	[HttpGet]
-	[Route("Test")]
-	public IActionResult HelloWorld()
-	{
-		_logger.LogDebug("Hello worlds?");
-
-		var tjo = _flightDataContext.FlightData.AsQueryable().ToList();
-
-		var connectionString = _appSettings.Value.MysqlConnectionString;
-
-		return Content("Hello worlds");
-	}
-
-	[HttpPost(Name = "IngestFlightData")]
+	[HttpPost]
 	[Route("")]
 	public async Task<IActionResult> FlightData([FromBody] FlightDataModel dataModel)
 	{
