@@ -6,8 +6,6 @@ name: Docker-Parser
 # documentation.
 
 on:
-  schedule:
-    - cron: '18 3 * * *'
   push:
     branches: [ "main" ]
     # Publish semver tags as releases.
@@ -19,8 +17,8 @@ env:
   # Use docker.io for Docker Hub if empty
   REGISTRY: ghcr.io
   # github.repository as <account>/<repo>
-  IMAGE_NAME: sharp-readsb-json-parser
-  
+  IMAGE_NAME: ap-andersson/sharp-readsb-json-parser
+
 jobs:
   build:
 
