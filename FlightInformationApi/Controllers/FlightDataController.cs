@@ -70,20 +70,17 @@ public class FlightDataController : ControllerBase
 
 		if (!string.IsNullOrEmpty(filterModel.AircraftHex))
 		{
-			query = query.Where(x =>
-				x.AircraftHex.Equals(filterModel.AircraftHex, StringComparison.InvariantCultureIgnoreCase));
+			query = query.Where(x => x.AircraftHex == filterModel.AircraftHex.ToUpper()); ;
 		}
 
 		if (!string.IsNullOrEmpty(filterModel.AircraftRegistration))
 		{
-			query = query.Where(x =>
-				x.AircraftRegistration.Equals(filterModel.AircraftRegistration, StringComparison.InvariantCultureIgnoreCase));
+			query = query.Where(x => x.AircraftRegistration == filterModel.AircraftRegistration.ToUpper());
 		}
 
 		if (!string.IsNullOrEmpty(filterModel.FlightNumber))
 		{
-			query = query.Where(x =>
-				x.FlightNumber.Equals(filterModel.FlightNumber, StringComparison.InvariantCultureIgnoreCase));
+			query = query.Where(x => x.FlightNumber == filterModel.FlightNumber.ToUpper());
 		}
 
 		var result = await query.ToListAsync();
