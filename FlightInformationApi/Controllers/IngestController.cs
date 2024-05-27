@@ -37,7 +37,7 @@ public class IngestController : ControllerBase
 				x => x.First().Name
 				);
 
-        _lazyLock = new SemaphoreSlim(0, 1);
+        _lazyLock = new SemaphoreSlim(1, 1);
 
     }
 
@@ -74,7 +74,9 @@ public class IngestController : ControllerBase
 			Stop = dataModel.FlightDataList.Max(x => x.EndTime)
 		};
 
-		await _lazyLock.WaitAsync();
+        _logger.LogTrace("New ingest, locking");
+
+        await _lazyLock.WaitAsync();
 
         try
         {
@@ -157,11 +159,11 @@ public class IngestController : ControllerBase
         catch (Exception ex)
         {
             // Something went wrong during update... Handle better in future
-            Console.WriteLine(ex);
-            throw;
+            _logger.LogError(ex, "Exception during ingest");
         }
         finally
         {
+            _logger.LogTrace("Ingest finally done, release");
             _lazyLock.Release();
         }
 
