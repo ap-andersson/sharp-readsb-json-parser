@@ -10,5 +10,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)FlightData.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)FlightDataFilterModel.cs" />
   </ItemGroup>
 </Project>

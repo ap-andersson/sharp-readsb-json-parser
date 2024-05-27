@@ -1,0 +1,30 @@
+﻿@{
+    ViewData["Title"] = "Search flight data";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Search flight data</h1>
+</div>
+
+<div id="search">
+    <form id="search-form">
+        <input type="text" id="SenderId" placeholder="SenderId" />
+        <input type="text" id="AircraftHex" placeholder="AircraftHex" />
+        <input type="text" id="AircraftType" placeholder="AircraftType" />
+        <input type="text" id="AircraftRegistration" placeholder="AircraftRegistration" />
+        <input type="text" id="FlightNumber" placeholder="FlightNumber" />
+        <input class="datepicker" id="Day" placeholder="Day">
+        <button type="button" id="btn-submit">Submit</button>
+    </form>
+</div>
+
+
+<div id="search-results">
+
+</div>
+
+@section Scripts {
+
+    <script src="~/js/search.js" asp-append-version="true"></script>
+
+}

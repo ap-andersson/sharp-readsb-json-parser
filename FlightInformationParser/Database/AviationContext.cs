@@ -1,8 +1,8 @@
-﻿using FeederJsonParser.Dto;
+﻿using FlightInformationParser.Dto;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 
-namespace FeederJsonParser.Database;
+namespace FlightInformationParser.Database;
 
 public class AviationContext : DbContext
 {

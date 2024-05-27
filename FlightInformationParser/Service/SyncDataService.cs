@@ -1,15 +1,14 @@
-﻿using System.Net.Http.Headers;
-using System.Net.Http.Json;
-using FeederJsonParser.Database;
-using FeederJsonParser.Dto;
-using ApiModels;
+﻿using System.Net.Http.Json;
+using FlightInformation;
+using FlightInformationParser.Database;
+using FlightInformationParser.Dto;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
-namespace FeederJsonParser.Service;
+namespace FlightInformationParser.Service;
 
 internal class SyncDataService : IHostedService, IDisposable
 {

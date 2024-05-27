@@ -1,6 +1,5 @@
-﻿using ApiModels;
+﻿using FlightInformation;
 using FlightInformationApi.Database;
-using FlightInformationApi.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -55,6 +54,7 @@ public class FlightDataController : ControllerBase
 		if (string.IsNullOrEmpty(filterModel.AircraftHex)
 		    && string.IsNullOrEmpty(filterModel.AircraftRegistration)
 		    && string.IsNullOrEmpty(filterModel.FlightNumber)
+		    && string.IsNullOrEmpty(filterModel.AircraftType)
 		    && !filterModel.Day.HasValue)
 		{
 			return StatusCode(StatusCodes.Status400BadRequest, "At least one filter has to be selected");
@@ -83,7 +83,12 @@ public class FlightDataController : ControllerBase
 			query = query.Where(x => x.FlightNumber == filterModel.FlightNumber.ToUpper());
 		}
 
-		var result = await query.ToListAsync();
+        if (!string.IsNullOrEmpty(filterModel.AircraftType))
+        {
+            query = query.Where(x => x.AircraftType == filterModel.AircraftType.ToUpper());
+        }
+
+        var result = await query.ToListAsync();
 
 		return Ok(result);
 	}

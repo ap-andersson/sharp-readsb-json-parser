@@ -1,10 +1,10 @@
-﻿using FeederJsonParser.Database;
-using FeederJsonParser.Dto;
-using FeederJsonParser.Service;
+﻿using FlightInformationParser.Database;
+using FlightInformationParser.Dto;
+using FlightInformationParser.Service;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
-namespace FeederJsonParser.Handler;
+namespace FlightInformationParser.Handler;
 
 internal class DefaultAircraftHandler : IAircraftHandler
 {

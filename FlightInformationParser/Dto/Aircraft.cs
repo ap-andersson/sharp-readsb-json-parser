@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace FeederJsonParser.Dto;
+namespace FlightInformationParser.Dto;
 
 public class Aircraft
 {

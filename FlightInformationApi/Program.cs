@@ -28,7 +28,9 @@ public class Program
 
 public class Startup
 {
-	public IConfiguration Configuration { get; set; }
+    private const string AllowOrigins = "_myAllowSpecificOrigins";
+
+    public IConfiguration Configuration { get; set; }
 
 	public Startup(IConfiguration configuration)
 	{
@@ -38,7 +40,16 @@ public class Startup
 
 	public void ConfigureServices(IServiceCollection services)
 	{
-		services.AddControllers();
+		services.AddCors(options =>
+        {
+            options.AddPolicy(name: AllowOrigins,
+                policy =>
+                {
+                    policy.WithOrigins("http://localhost:8888", "http://localhost:8889", "https://flightdata.andynet.se");
+                });
+        });
+
+        services.AddControllers();
 
 		services.AddOptions<AppSettings>().Bind(Configuration.GetSection(AppSettings.ConfigAreaName));
 
@@ -64,7 +75,9 @@ public class Startup
 
 		app.UseRouting();
 
-		app.UseAuthorization();
+        app.UseCors(AllowOrigins);
+
+        app.UseAuthorization();
 
 		app.UseEndpoints(builder =>
 		{

@@ -1,4 +1,4 @@
-﻿namespace FeederJsonParser.Dto;
+﻿namespace FlightInformationParser.Dto;
 
 public class AppSettings
 {

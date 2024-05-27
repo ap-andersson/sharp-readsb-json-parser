@@ -1,0 +1,54 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34607.119
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FlightInformationApi", "FlightInformationApi\FlightInformationApi.csproj", "{16256167-54FB-4071-9D17-CC8CA6416431}"
+EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "ApiModels", "ApiModels\ApiModels.shproj", "{F9584204-436D-410B-8711-00EDC9071AF3}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FlightInformationApp", "FlightInformationApp\FlightInformationApp.csproj", "{D6831E89-1E32-4D0D-B85A-F4AB5946D765}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{51E8B384-15F3-4622-926C-182A39C50AA0}"
+	ProjectSection(SolutionItems) = preProject
+		.github\workflows\docker-publish-api.yml = .github\workflows\docker-publish-api.yml
+		.github\workflows\docker-publish-app.yml = .github\workflows\docker-publish-app.yml
+		Dockerfile-Api = Dockerfile-Api
+		.github\workflows\docker-publish-parser.yml = .github\workflows\docker-publish-parser.yml
+		Dockerfile-App = Dockerfile-App
+		Dockerfile-Parser = Dockerfile-Parser
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FlightInformationParser", "FlightInformationParser\FlightInformationParser.csproj", "{19B69C16-B362-44E4-86F8-641DA04CE755}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{16256167-54FB-4071-9D17-CC8CA6416431}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{16256167-54FB-4071-9D17-CC8CA6416431}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{16256167-54FB-4071-9D17-CC8CA6416431}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{16256167-54FB-4071-9D17-CC8CA6416431}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D6831E89-1E32-4D0D-B85A-F4AB5946D765}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D6831E89-1E32-4D0D-B85A-F4AB5946D765}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D6831E89-1E32-4D0D-B85A-F4AB5946D765}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D6831E89-1E32-4D0D-B85A-F4AB5946D765}.Release|Any CPU.Build.0 = Release|Any CPU
+		{19B69C16-B362-44E4-86F8-641DA04CE755}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{19B69C16-B362-44E4-86F8-641DA04CE755}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{19B69C16-B362-44E4-86F8-641DA04CE755}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{19B69C16-B362-44E4-86F8-641DA04CE755}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {F50C0055-CD8E-41BF-B3AE-60D1495C12C6}
+	EndGlobalSection
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		ApiModels\ApiModels.projitems*{16256167-54fb-4071-9d17-cc8ca6416431}*SharedItemsImports = 5
+		ApiModels\ApiModels.projitems*{19b69c16-b362-44e4-86f8-641da04ce755}*SharedItemsImports = 5
+		ApiModels\ApiModels.projitems*{f9584204-436d-410b-8711-00edc9071af3}*SharedItemsImports = 13
+	EndGlobalSection
+EndGlobal

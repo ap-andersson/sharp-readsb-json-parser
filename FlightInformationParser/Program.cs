@@ -1,14 +1,13 @@
-﻿using FeederJsonParser.Dto;
-using Microsoft.Extensions.Logging;
-using FeederJsonParser.Handler;
-using FeederJsonParser.Database;
-using FeederJsonParser.Service;
+﻿using FlightInformationParser.Database;
+using FlightInformationParser.Dto;
+using FlightInformationParser.Handler;
+using FlightInformationParser.Service;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Configuration.Json;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
-namespace FeederJsonParser;
+namespace FlightInformationParser;
 
 internal class Program
 {

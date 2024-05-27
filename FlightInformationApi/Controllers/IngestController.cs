@@ -1,5 +1,5 @@
 using System.Globalization;
-using ApiModels;
+using FlightInformation;
 using FlightInformationApi.Database;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Options;
@@ -19,6 +19,8 @@ public class IngestController : ControllerBase
 
 	private readonly IReadOnlyDictionary<Guid, string> _sendersDict;
 
+    private readonly SemaphoreSlim _lazyLock;
+
 	public IngestController(ILogger<IngestController> logger
 		, IOptions<AppSettings> appSettings
 		, FlightDataContext flightDataContext
@@ -34,7 +36,10 @@ public class IngestController : ControllerBase
 				x => x.Key, 
 				x => x.First().Name
 				);
-	}
+
+        _lazyLock = new SemaphoreSlim(0, 1);
+
+    }
 
 	[HttpPost]
 	[Route("")]
@@ -69,80 +74,96 @@ public class IngestController : ControllerBase
 			Stop = dataModel.FlightDataList.Max(x => x.EndTime)
 		};
 
-		var existingDbRecords = _flightDataContext.FlightData.AsQueryable()
-			.Where(x =>
-				relevantAircraftHexes.Contains(x.AircraftHex)
-				&& x.StartTime >= relevantTimeSpan.Start
-				&& x.EndTime <= relevantTimeSpan.Stop
-			)
-			.GroupBy(x => x.AircraftHex)
-			.ToDictionary(
-				x => x.Key, 
-				x => x.OrderByDescending(y => y.EndTime).ToList()
-				);
+		await _lazyLock.WaitAsync();
 
-		foreach (var data in dataModel.FlightDataList)
-		{
-			// If any of these are missing we skip for now
-			if(string.IsNullOrEmpty(data.AircraftHex)) continue;
-			if(string.IsNullOrEmpty(data.FlightNumber)) continue;
-			if(string.IsNullOrEmpty(data.AircraftRegistration)) continue;
+        try
+        {
 
-			// Ensure CAPITAL LETTERS
-			data.AircraftHex = data.AircraftHex.ToUpper(CultureInfo.InvariantCulture);
-			data.FlightNumber = data.FlightNumber.ToUpper(CultureInfo.InvariantCulture);
-			data.AircraftRegistration = data.AircraftRegistration.ToUpper(CultureInfo.InvariantCulture);
-			data.AircraftType = data.AircraftType?.ToUpper(CultureInfo.InvariantCulture);
+            var existingDbRecords = _flightDataContext.FlightData.AsQueryable()
+                .Where(x =>
+                    relevantAircraftHexes.Contains(x.AircraftHex)
+                    && x.StartTime >= relevantTimeSpan.Start
+                    && x.EndTime <= relevantTimeSpan.Stop
+                )
+                .GroupBy(x => x.AircraftHex)
+                .ToDictionary(
+                    x => x.Key,
+                    x => x.OrderByDescending(y => y.EndTime).ToList()
+                );
 
-			if (!existingDbRecords.ContainsKey(data.AircraftHex))
-			{
-				await CreateRecord(data);
-				continue;
-			}
+            foreach (var data in dataModel.FlightDataList)
+            {
+                // If any of these are missing we skip for now
+                if (string.IsNullOrEmpty(data.AircraftHex)) continue;
+                if (string.IsNullOrEmpty(data.FlightNumber)) continue;
+                if (string.IsNullOrEmpty(data.AircraftRegistration)) continue;
 
-			var existingRecords = existingDbRecords[data.AircraftHex];
+                // Ensure CAPITAL LETTERS
+                data.AircraftHex = data.AircraftHex.ToUpper(CultureInfo.InvariantCulture);
+                data.FlightNumber = data.FlightNumber.ToUpper(CultureInfo.InvariantCulture);
+                data.AircraftRegistration = data.AircraftRegistration.ToUpper(CultureInfo.InvariantCulture);
+                data.AircraftType = data.AircraftType?.ToUpper(CultureInfo.InvariantCulture);
 
-			var existingRecord = existingRecords.FirstOrDefault(x =>
-			{
-				if (!x.FlightNumber.Equals(data.FlightNumber)) return false;
+                if (!existingDbRecords.ContainsKey(data.AircraftHex))
+                {
+                    await CreateRecord(data);
+                    continue;
+                }
 
-				var startTimeDiff = (x.StartTime - data.StartTime).TotalMinutes;
-				var endTimeDiff = (data.EndTime - x.EndTime).TotalMinutes;
+                var existingRecords = existingDbRecords[data.AircraftHex];
 
-				if ((startTimeDiff < 0 || startTimeDiff > 60) && (endTimeDiff < 0 || endTimeDiff > 60))
-				{
-					return false; // If not seen within 60 minutes its considered a new flight... Maybe weird. 
-				}
+                var existingRecord = existingRecords.FirstOrDefault(x =>
+                {
+                    if (!x.FlightNumber.Equals(data.FlightNumber)) return false;
 
-				return true;
-			});
+                    var startTimeDiff = (x.StartTime - data.StartTime).TotalMinutes;
+                    var endTimeDiff = (data.EndTime - x.EndTime).TotalMinutes;
 
-			if (existingRecord == null)
-			{
-				await CreateRecord(data);
-				continue;
-			}
+                    if ((startTimeDiff < 0 || startTimeDiff > 60) && (endTimeDiff < 0 || endTimeDiff > 60))
+                    {
+                        return false; // If not seen within 60 minutes its considered a new flight... Maybe weird. 
+                    }
 
-			existingRecord.StartTime = data.StartTime < existingRecord.StartTime 
-				? data.StartTime 
-				: existingRecord.StartTime;
+                    return true;
+                });
 
-			existingRecord.EndTime = data.EndTime > existingRecord.EndTime 
-				? data.EndTime 
-				: existingRecord.EndTime;
+                if (existingRecord == null)
+                {
+                    await CreateRecord(data);
+                    continue;
+                }
 
-			existingRecord.AircraftRegistration = string.IsNullOrWhiteSpace(existingRecord.AircraftRegistration)
-				? data.AircraftRegistration
-				: existingRecord.AircraftRegistration;
+                existingRecord.StartTime = data.StartTime < existingRecord.StartTime
+                    ? data.StartTime
+                    : existingRecord.StartTime;
 
-			existingRecord.AircraftType = string.IsNullOrWhiteSpace(existingRecord.AircraftType)
-				? data.AircraftRegistration
-				: existingRecord.AircraftType;
+                existingRecord.EndTime = data.EndTime > existingRecord.EndTime
+                    ? data.EndTime
+                    : existingRecord.EndTime;
 
-			_flightDataContext.Update(existingRecord);
-		}
-		
-		await _flightDataContext.SaveChangesAsync();
+                existingRecord.AircraftRegistration = string.IsNullOrWhiteSpace(existingRecord.AircraftRegistration)
+                    ? data.AircraftRegistration
+                    : existingRecord.AircraftRegistration;
+
+                existingRecord.AircraftType = string.IsNullOrWhiteSpace(existingRecord.AircraftType)
+                    ? data.AircraftRegistration
+                    : existingRecord.AircraftType;
+
+                _flightDataContext.Update(existingRecord);
+            }
+
+            await _flightDataContext.SaveChangesAsync();
+        }
+        catch (Exception ex)
+        {
+            // Something went wrong during update... Handle better in future
+            Console.WriteLine(ex);
+            throw;
+        }
+        finally
+        {
+            _lazyLock.Release();
+        }
 
 		return Ok();
 	}

@@ -1,11 +1,12 @@
 ﻿using System.Net.Sockets;
 using System.Text.Json;
-using FeederJsonParser.Dto;
+using FlightInformationParser.Dto;
+using FlightInformationParser.Handler;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
-namespace FeederJsonParser.Service;
+namespace FlightInformationParser.Service;
 
 internal class ParserService : IHostedService, IDisposable
 {
