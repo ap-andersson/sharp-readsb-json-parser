@@ -49,13 +49,15 @@ public class Startup
         //              });
         //      });
 
-        services.AddCors(options =>
-        {
-            options.AddDefaultPolicy(policy =>
-            {
-                policy.AllowAnyOrigin();
-            });
-        });
+        //services.AddCors(options =>
+        //{
+        //    options.AddDefaultPolicy(policy =>
+        //    {
+        //        policy.AllowAnyMethod().AllowAnyHeader().SetIsOriginAllowed(s => true).AllowCredentials()
+        //    });
+        //});
+
+        services.AddCors();
 
         services.AddControllers();
 
@@ -84,6 +86,12 @@ public class Startup
         app.UseRouting();
 
         //app.UseCors(AllowOrigins);
+
+        app.UseCors(x => x
+            .AllowAnyMethod()
+            .AllowAnyHeader()
+            .SetIsOriginAllowed(origin => true)
+            .AllowCredentials());
 
         app.UseAuthorization();
 
