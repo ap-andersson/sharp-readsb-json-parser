@@ -45,7 +45,7 @@ public class Startup
             options.AddPolicy(name: AllowOrigins,
                 policy =>
                 {
-                    policy.WithOrigins("http://localhost:8888", "http://localhost:8889", "https://flightdata.andynet.se");
+                    policy.WithOrigins("http://localhost:8888", "http://localhost:8889", "https://flightinfo.andynet.se/");
                 });
         });
 
