@@ -6,82 +6,90 @@ namespace FlightInformationApi;
 
 public class Program
 {
-	public static void Main(string[] args)
-	{
-		CreateHostBuilder(args)
-			.Build()
-			.Run();
-	}
+    public static void Main(string[] args)
+    {
+        CreateHostBuilder(args)
+            .Build()
+            .Run();
+    }
 
-	public static IHostBuilder CreateHostBuilder(string[] args) =>
-		Host.CreateDefaultBuilder(args)
-			.ConfigureAppConfiguration(builder =>
-			{
-				builder.AddJsonFile("appsettings.local.json", true);
-			})
-			.ConfigureWebHostDefaults(webBuilder =>
-			{
-				webBuilder.UseStartup<Startup>();
-			});
+    public static IHostBuilder CreateHostBuilder(string[] args) =>
+        Host.CreateDefaultBuilder(args)
+            .ConfigureAppConfiguration(builder =>
+            {
+                builder.AddJsonFile("appsettings.local.json", true);
+            })
+            .ConfigureWebHostDefaults(webBuilder =>
+            {
+                webBuilder.UseStartup<Startup>();
+            });
 }
 
 
 public class Startup
 {
-    private const string AllowOrigins = "_myAllowSpecificOrigins";
+    //private const string AllowOrigins = "_myAllowSpecificOrigins";
 
     public IConfiguration Configuration { get; set; }
 
-	public Startup(IConfiguration configuration)
-	{
-		Configuration = configuration;
-	}
+    public Startup(IConfiguration configuration)
+    {
+        Configuration = configuration;
+    }
 
 
-	public void ConfigureServices(IServiceCollection services)
-	{
-		services.AddCors(options =>
+    public void ConfigureServices(IServiceCollection services)
+    {
+        //services.AddCors(options =>
+        //      {
+        //          options.AddPolicy(name: AllowOrigins,
+        //              policy =>
+        //              {
+        //                  policy.WithOrigins("http://localhost:8888", "http://localhost:8889", "https://flightinfo.andynet.se/");
+        //              });
+        //      });
+
+        services.AddCors(options =>
         {
-            options.AddPolicy(name: AllowOrigins,
-                policy =>
-                {
-                    policy.WithOrigins("http://localhost:8888", "http://localhost:8889", "https://flightinfo.andynet.se/");
-                });
+            options.AddDefaultPolicy(policy =>
+            {
+                policy.AllowAnyOrigin();
+            });
         });
 
         services.AddControllers();
 
-		services.AddOptions<AppSettings>().Bind(Configuration.GetSection(AppSettings.ConfigAreaName));
+        services.AddOptions<AppSettings>().Bind(Configuration.GetSection(AppSettings.ConfigAreaName));
 
-		services.AddEndpointsApiExplorer();
-		services.AddSwaggerGen();
+        services.AddEndpointsApiExplorer();
+        services.AddSwaggerGen();
 
-		var settings = Configuration.GetSection(AppSettings.ConfigAreaName).Get<AppSettings>();
+        var settings = Configuration.GetSection(AppSettings.ConfigAreaName).Get<AppSettings>();
 
-		services.AddDbContext<FlightDataContext>(dbContextOptions =>
-		{
-			dbContextOptions
-				.UseMySql(settings.MysqlConnectionString, ServerVersion.Create(8,3,0, ServerType.MySql))
-				.LogTo(Console.WriteLine, LogLevel.Warning)
-				//.EnableSensitiveDataLogging()
-				.EnableDetailedErrors();
-		});
-	}
+        services.AddDbContext<FlightDataContext>(dbContextOptions =>
+        {
+            dbContextOptions
+                .UseMySql(settings.MysqlConnectionString, ServerVersion.Create(8, 3, 0, ServerType.MySql))
+                .LogTo(Console.WriteLine, LogLevel.Warning)
+                //.EnableSensitiveDataLogging()
+                .EnableDetailedErrors();
+        });
+    }
 
-	public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
-	{
-		app.UseSwagger();
-		app.UseSwaggerUI();
+    public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+    {
+        app.UseSwagger();
+        app.UseSwaggerUI();
 
-		app.UseRouting();
+        app.UseRouting();
 
-        app.UseCors(AllowOrigins);
+        //app.UseCors(AllowOrigins);
 
         app.UseAuthorization();
 
-		app.UseEndpoints(builder =>
-		{
-			builder.MapControllers();
-		});
-	}
+        app.UseEndpoints(builder =>
+        {
+            builder.MapControllers();
+        });
+    }
 }
