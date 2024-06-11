@@ -31,7 +31,7 @@ internal class DefaultAircraftHandler : IAircraftHandler
 			.Where(x =>
 				x.AircraftHex == aircraft.Hex
 				&& x.FlightNumber == aircraft.Flight
-				&& x.EndTime > DateTime.Now.AddMinutes(-30))
+				&& x.EndTime > DateTime.Now.AddHours(-1)) // Same aircraft with same flight within one hour should update the row
 			.ToListAsync();
 
 		// More than one row found, should not happen, skip
