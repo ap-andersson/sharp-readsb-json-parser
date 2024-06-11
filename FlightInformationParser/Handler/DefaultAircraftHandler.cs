@@ -24,6 +24,7 @@ internal class DefaultAircraftHandler : IAircraftHandler
 		Sanitize(aircraft);
 
 		if(string.IsNullOrWhiteSpace(aircraft.Flight)) return;
+		if(string.IsNullOrWhiteSpace(aircraft.AircraftRegistration)) return;
 
 		// Find any matching existing rows
 		var existingRows = await _db.FlightInfos.AsQueryable()
@@ -75,7 +76,7 @@ internal class DefaultAircraftHandler : IAircraftHandler
 
 	private void Sanitize(Aircraft aircraft)
 	{
-		aircraft.AircraftRegistration = aircraft.AircraftRegistration.Trim().ToUpper();
+		aircraft.AircraftRegistration = aircraft.AircraftRegistration?.Trim().ToUpper() ?? null;
 		aircraft.AircraftType = aircraft.AircraftType.Trim().ToUpper();
 		aircraft.Flight = aircraft.Flight?.Trim().ToUpper() ?? null;
 		aircraft.Hex = aircraft.Hex.Trim().ToUpper();

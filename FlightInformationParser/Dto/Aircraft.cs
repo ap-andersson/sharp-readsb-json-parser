@@ -14,7 +14,7 @@ public class Aircraft
     public string? Flight { get; set; }
 
     [JsonPropertyName("r")]
-    public string AircraftRegistration { get; set; }
+    public string? AircraftRegistration { get; set; }
 
     [JsonPropertyName("t")]
     public string AircraftType { get; set; }
